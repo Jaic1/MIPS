@@ -1,0 +1,2 @@
+# MIPS
+MIPS32 CPU
