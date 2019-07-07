@@ -30,16 +30,18 @@ module mips #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     
     // data modified: irwrite
     wire irwrite;
-    wire zero, alusrca, memtoreg, iord, pcen, regwrite, regdst;
-    wire [1:0] aluop, pcsource;
-    wire [2:0] alusrcb, alucont;
+    wire zero, memtoreg, iord, pcen, regwrite, regdst;
+    wire [1:0] aluop, pcsource, alusrca;
+    wire [2:0] alusrcb;
+    wire [3:0] alucont;
     wire [WIDTH-1:0] instr;
     
-    controller cont(clk, reset, instr[31:26], zero,
-                    memread, memwrite, alusrca, memtoreg, iord,
+    controller cont(clk, reset, instr[31:26], instr[5:0], zero,
+                    memread, memwrite, memtoreg, iord,
                     pcen,
                     regwrite, regdst,
-                    pcsource, aluop, alusrcb,
+                    pcsource, aluop, alusrca,
+                    alusrcb,
                     irwrite);
                     
     alucontrol ac(aluop, instr[5:0], alucont);
@@ -47,9 +49,9 @@ module mips #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     datapath #(ADR_WIDTH, WIDTH, REGBITS) dp(
                 clk, reset,
                 memdata, 
-                alusrca, memtoreg, iord, pcen,
+                memtoreg, iord, pcen,
                 regwrite, regdst, 
-                pcsource, 
+                pcsource, alusrca, 
                 alusrcb, 
                 irwrite, 
                 alucont, 

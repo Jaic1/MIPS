@@ -2,16 +2,35 @@
 # Vivado v2019.1 (64-bit)
 # SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
 # IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
-# Start of session at: Sun Jul  7 17:35:53 2019
-# Process ID: 14760
+# Start of session at: Sun Jul  7 21:45:25 2019
+# Process ID: 16972
 # Current directory: D:/Sophomore/MIPS/Project/MIPS
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent18276 D:\Sophomore\MIPS\Project\MIPS\MIPS.xpr
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent7348 D:\Sophomore\MIPS\Project\MIPS\MIPS.xpr
 # Log file: D:/Sophomore/MIPS/Project/MIPS/vivado.log
 # Journal file: D:/Sophomore/MIPS/Project/MIPS\vivado.jou
 #-----------------------------------------------------------
 start_gui
 open_project D:/Sophomore/MIPS/Project/MIPS/MIPS.xpr
 update_compile_order -fileset sources_1
+launch_simulation
+open_wave_config D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg
+source top.tcl
+current_wave_config {top_behav.wcfg}
+add_wave {{/top/cpu/dp/rf/RAM[19]}} {{/top/cpu/dp/rf/RAM[18]}} {{/top/cpu/dp/rf/RAM[17]}} {{/top/cpu/dp/rf/RAM[16]}} 
+save_wave_config {D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg}
+close_sim
+launch_simulation
+open_wave_config D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg
+source top.tcl
+close_sim
+launch_simulation
+open_wave_config D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg
+source top.tcl
+save_wave_config {D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg}
+save_wave_config {D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg}
+save_wave_config {D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg}
+save_wave_config {D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg}
+close_sim
 launch_simulation
 open_wave_config D:/Sophomore/MIPS/Project/MIPS/top_behav.wcfg
 source top.tcl

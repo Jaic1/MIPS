@@ -22,21 +22,27 @@
 
 module alu #(parameter WIDTH = 32) (
     input       [WIDTH-1:0]     a, b,
-    input       [2      :0]     alucont,
+    input       [3      :0]     alucont,
     output reg  [WIDTH-1:0]     result
     );
     
     wire    [WIDTH-1:0]     b2, sum, slt;
+    wire    [2      :0]     alucontx;
     
     assign  b2  =   alucont[2] ? ~b : b;
     assign  sum =   a + b2 + alucont[2];
     assign  slt =   sum[WIDTH-1];
     
+    assign  alucontx = {alucont[3], alucont[1:0]};
+    
     always @(*)
-        case (alucont[1:0])
-            2'b00: result <= a & b;
-            2'b01: result <= a | b;
-            2'b10: result <= sum;
-            2'b11: result <= slt;
+        case (alucontx)
+            3'b000: result <= a & b;
+            3'b001: result <= a | b;
+            3'b010: result <= sum;
+            3'b011: result <= slt;
+            3'b100: result <= b << a;       // sll
+            3'b101: result <= b >> a;       // srl
+            default:    result <= 32'b0;    // control never reach here
         endcase
 endmodule

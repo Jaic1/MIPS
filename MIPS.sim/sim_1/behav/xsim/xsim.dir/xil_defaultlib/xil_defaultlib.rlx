@@ -3,10 +3,10 @@
 May 24 2019
 15:06:07
 D:/Sophomore/MIPS/Project/MIPS/MIPS.sim/sim_1/behav/xsim/glbl.v,1558713910,verilog,,,,glbl,,,,,,,,
-D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/alu.v,1562469827,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/alucontrol.v,,alu,,,,,,,,
-D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/alucontrol.v,1562490847,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/controller.v,,alucontrol,,,,,,,,
-D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/controller.v,1562491085,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/datapath.v,,controller,,,,,,,,
-D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/datapath.v,1562490124,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/exmemory.v,,datapath,,,,,,,,
+D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/alu.v,1562510678,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/alucontrol.v,,alu,,,,,,,,
+D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/alucontrol.v,1562510458,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/controller.v,,alucontrol,,,,,,,,
+D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/controller.v,1562510298,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/datapath.v,,controller,,,,,,,,
+D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/datapath.v,1562510353,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/exmemory.v,,datapath,,,,,,,,
 D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/exmemory.v,1562482545,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/flop.v,,exmemory,,,,,,,,
 D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/flop.v,1562403791,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/flopen.v,,flop,,,,,,,,
 D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/flopen.v,1562403961,verilog,,D:/Sophomore/MIPS/Project/MIPS/MIPS.srcs/sources_1/new/flopenr.v,,flopen,,,,,,,,

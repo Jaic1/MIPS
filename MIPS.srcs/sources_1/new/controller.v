@@ -22,12 +22,12 @@
 
 module controller(
 	input					     clk, reset,
-	input      [5:0]			 op,
+	input      [5:0]			 op, funct,
 	input                        zero,
-	output     reg               memread, memwrite, alusrca, memtoreg, iord,
+	output     reg               memread, memwrite, memtoreg, iord,
 	output                       pcen,
 	output     reg               regwrite, regdst,
-	output     reg  [1:0]        pcsource, aluop,
+	output     reg  [1:0]        pcsource, aluop, alusrca,
 	output     reg  [2:0]        alusrcb,
 	output     reg               irwrite
     );
@@ -46,6 +46,7 @@ module controller(
     parameter   JEX      =   4'b1010;       // 10
     parameter   ANDIEX   =   4'b1011;       // 11
     parameter   ANDIWR   =   4'b1100;       // 12
+    parameter   SHAMT    =   4'b1101;       // 13
     
     parameter   LW       =   6'b100011;
     parameter   SW       =   6'b101011;
@@ -66,7 +67,11 @@ module controller(
             DECODE:     case (op)
                             LW:         nextstate   <=  MEMADR;
                             SW:         nextstate   <=  MEMADR;
-                            RTYPE:      nextstate   <=  RTYPEEX;
+                            RTYPE:      case (funct)
+                                            6'b000000:  nextstate   <=  SHAMT;      // sll
+                                            6'b000010:  nextstate   <=  SHAMT;      // srl
+                                            default:    nextstate   <=  RTYPEEX;
+                                        endcase
                             BEQ:        nextstate   <=  BEQEX;
                             J:          nextstate   <=  JEX;
                             ANDI:       nextstate   <=  ANDIEX;
@@ -86,6 +91,7 @@ module controller(
             JEX:        nextstate   <=  FETCH;
             ANDIEX:     nextstate   <=  ANDIWR;
             ANDIWR:     nextstate   <=  FETCH;
+            SHAMT:      nextstate   <=  RTYPEWR;
             default:    nextstate   <=  FETCH;  // control never reach here
         endcase
     end
@@ -97,7 +103,7 @@ module controller(
         pcwrite     <=  0;          pcwritecond     <=  0;
         regwrite    <=  0;          regdst          <=  0;
         memread     <=  0;          memwrite        <=  0;
-        alusrca     <=  0;          alusrcb         <=  3'b000;
+        alusrca     <=  2'b00;      alusrcb         <=  3'b000;
         aluop       <=  2'b00;      pcsource        <=  2'b00;
         iord        <=  0;          memtoreg        <=  0;
         case (state)
@@ -113,7 +119,7 @@ module controller(
             end
             
             MEMADR: begin
-                alusrca     <=  1;      // choose register A
+                alusrca     <=  2'b01;   // choose register A
                 alusrcb     <=  3'b010;  // choose instr's imme(to be added with register rs)
             end
             
@@ -133,7 +139,7 @@ module controller(
             end
             
             RTYPEEX: begin
-               alusrca      <=  1;      // choose register A and B(default)
+               alusrca      <=  2'b01;  // choose register A and B(default)
                aluop        <=  2'b10;  // RTYPE: utilize funct
             end
             
@@ -143,7 +149,7 @@ module controller(
             end
             
             BEQEX: begin
-                alusrca     <=  1;
+                alusrca     <=  2'b01;
                 aluop       <=  2'b01;
                 pcwritecond <=  1;
                 pcsource    <=  2'b01;  // beq offset+pc already in aluout
@@ -155,13 +161,18 @@ module controller(
             end
             
             ANDIEX: begin
-                alusrca     <=  1;
+                alusrca     <=  2'b01;
                 alusrcb     <=  3'b100;
                 aluop       <=  2'b11;
             end
             
             ANDIWR: begin
                 regwrite    <=  1;
+            end
+            
+            SHAMT: begin
+                alusrca      <=  2'b10;  // choose shamt and register B(default)
+                aluop        <=  2'b10;  // RTYPE: utilize funct
             end
         endcase
     end

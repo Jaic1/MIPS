@@ -46,7 +46,7 @@ module top #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
         reset = 1;
         #(5);
         reset = 0;
-        #(PERIOD * 20) $stop;
+        #(PERIOD * 40) $stop;
     end
     
     always begin

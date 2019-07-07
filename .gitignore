@@ -1,0 +1,7 @@
+
+*.log
+*.jou
+*.str
+
+MIPS.cache/
+.Xil/

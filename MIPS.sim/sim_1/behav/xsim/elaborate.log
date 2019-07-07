@@ -14,9 +14,9 @@ Compiling module xil_defaultlib.flopen
 Compiling module xil_defaultlib.flopenr
 Compiling module xil_defaultlib.flop
 Compiling module xil_defaultlib.mux2(WIDTH=16)
-Compiling module xil_defaultlib.mux2
-Compiling module xil_defaultlib.mux8
 Compiling module xil_defaultlib.mux4
+Compiling module xil_defaultlib.mux8
+Compiling module xil_defaultlib.mux2
 Compiling module xil_defaultlib.regfile
 Compiling module xil_defaultlib.alu
 Compiling module xil_defaultlib.zerodetect

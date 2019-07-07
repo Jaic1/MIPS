@@ -33,7 +33,7 @@ module exmemory #(parameter ADR_WIDTH = 16, WIDTH = 32) (
     
     initial 
     begin
-        $readmemb("memfile.mem", RAM);
+        $readmemh("memfile.mem", RAM);
     end
     
     // read or write bytes using big endian

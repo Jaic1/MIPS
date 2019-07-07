@@ -23,12 +23,12 @@
 module datapath #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     input                           clk, reset,
     input   [WIDTH-1 : 0]           memdata,
-    input                           alusrca, memtoreg, iord, pcen,
+    input                           memtoreg, iord, pcen,
     input                           regwrite, regdst,
-    input   [1:0]                   pcsource, 
+    input   [1:0]                   pcsource, alusrca,
     input   [2:0]                   alusrcb,
     input                           irwrite,
-    input   [2:0]                   alucont,
+    input   [3:0]                   alucont,
     output                          zero,
     output  [31:0]                  instr,
     output  [ADR_WIDTH-1 : 0]       adr,
@@ -43,7 +43,11 @@ module datapath #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     wire    [WIDTH-1   : 0]    md, rd1, rd2, wd, a, src1, src2, aluresult, aluout;
     wire    [15        : 0]    offset;
     wire    [WIDTH-1   : 0]    offset32, offset32x, offset32x2, jpc;
+    wire    [WIDTH-1   : 0]    shamt32;
     wire    [WIDTH-1   : 0]    pc, nextpc;
+    
+    // shamt
+    assign shamt32    = {24'h000000, 3'b000, instr[10:6]};
     
     // offset extended to 32bit
     assign offset     = instr[15:0];
@@ -73,7 +77,7 @@ module datapath #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     mux2    #(ADR_WIDTH)            adrmux(pc[ADR_WIDTH-1:0], aluout[ADR_WIDTH-1:0],
                                        iord, 
                                        adr);
-    mux2    #(WIDTH)            src1mux(pc, a, 
+    mux4    #(WIDTH)            src1mux(pc, a, shamt32, CONST_ZERO, 
                                         alusrca, 
                                         src1);
     mux8    #(WIDTH)            src2mux(writedata, CONST_FOUR, offset32x, offset32x2, 
