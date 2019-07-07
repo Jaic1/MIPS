@@ -1,0 +1,23 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../MIPS.srcs/sources_1/new/alu.v" \
+"../../../../MIPS.srcs/sources_1/new/alucontrol.v" \
+"../../../../MIPS.srcs/sources_1/new/controller.v" \
+"../../../../MIPS.srcs/sources_1/new/datapath.v" \
+"../../../../MIPS.srcs/sources_1/new/exmemory.v" \
+"../../../../MIPS.srcs/sources_1/new/flop.v" \
+"../../../../MIPS.srcs/sources_1/new/flopen.v" \
+"../../../../MIPS.srcs/sources_1/new/flopenr.v" \
+"../../../../MIPS.srcs/sources_1/new/mips.v" \
+"../../../../MIPS.srcs/sources_1/new/mux2.v" \
+"../../../../MIPS.srcs/sources_1/new/mux4.v" \
+"../../../../MIPS.srcs/sources_1/new/mux8.v" \
+"../../../../MIPS.srcs/sources_1/new/regfile.v" \
+"../../../../MIPS.srcs/sources_1/new/zerodetect.v" \
+"../../../../MIPS.srcs/sources_1/new/top.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
