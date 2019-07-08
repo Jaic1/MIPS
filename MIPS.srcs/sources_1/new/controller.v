@@ -32,8 +32,9 @@ module controller(
 	output     reg               irwrite
     );
     
+    // state
     reg [3:0]   state, nextstate;
-    reg         pcwrite, pcwritecond;
+    reg         pcwrite, pcwritecond, pcwritecond_notzero;
     parameter   FETCH    =   4'b0001;       // 1
     parameter   DECODE   =   4'b0010;       // 2
     parameter   MEMADR   =   4'b0011;       // 3
@@ -47,11 +48,14 @@ module controller(
     parameter   ANDIEX   =   4'b1011;       // 11
     parameter   ANDIWR   =   4'b1100;       // 12
     parameter   SHAMT    =   4'b1101;       // 13
+    parameter   BNEEX    =   4'b1110;       // 14
     
+    // op
     parameter   LW       =   6'b100011;
     parameter   SW       =   6'b101011;
     parameter   RTYPE    =   6'b000000;
-    parameter   BEQ      =   6'b000100;
+    parameter   BEQ      =   6'b000100;     // 0x04
+    parameter   BNE      =   6'b000101;     // 0x05
     parameter   J        =   6'b000010;
     parameter   ANDI     =   6'b001100;
     
@@ -73,6 +77,7 @@ module controller(
                                             default:    nextstate   <=  RTYPEEX;
                                         endcase
                             BEQ:        nextstate   <=  BEQEX;
+                            BNE:        nextstate   <=  BNEEX;
                             J:          nextstate   <=  JEX;
                             ANDI:       nextstate   <=  ANDIEX;
                             default:    nextstate   <=  FETCH;  // control never reach here
@@ -88,6 +93,7 @@ module controller(
             RTYPEEX:    nextstate   <=  RTYPEWR;
             RTYPEWR:    nextstate   <=  FETCH;
             BEQEX:      nextstate   <=  FETCH;
+            BNEEX:      nextstate   <=  FETCH;
             JEX:        nextstate   <=  FETCH;
             ANDIEX:     nextstate   <=  ANDIWR;
             ANDIWR:     nextstate   <=  FETCH;
@@ -99,7 +105,7 @@ module controller(
     // send control signal
     always @(*) begin
         // initial signal outputs
-        irwrite     <=  0;
+        irwrite     <=  0;          pcwritecond_notzero <= 0;
         pcwrite     <=  0;          pcwritecond     <=  0;
         regwrite    <=  0;          regdst          <=  0;
         memread     <=  0;          memwrite        <=  0;
@@ -155,6 +161,13 @@ module controller(
                 pcsource    <=  2'b01;  // beq offset+pc already in aluout
             end
             
+            BNEEX: begin
+                alusrca     <=  2'b01;
+                aluop       <=  2'b01;
+                pcwritecond_notzero <= 1;
+                pcsource    <=  2'b01;  // bne, similar to beq
+            end
+            
             JEX: begin
                 pcwrite     <=  1;
                 pcsource    <=  2'b10;  // choose j target
@@ -178,6 +191,6 @@ module controller(
     end
  
     // PC enable
-    assign pcen = pcwrite | (pcwritecond & zero);   
+    assign pcen = pcwrite | (pcwritecond & zero) | (pcwritecond_notzero & (~zero));   
     
 endmodule

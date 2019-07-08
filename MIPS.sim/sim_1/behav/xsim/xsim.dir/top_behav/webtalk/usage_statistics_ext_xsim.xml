@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<webTalkData  fileName='usage_statistics_ext_xsim.xml'  majorVersion='1' minorVersion='0' timeStamp='Sun Jul  7 12:18:46 2019'>
+<webTalkData  fileName='usage_statistics_ext_xsim.xml'  majorVersion='1' minorVersion='0' timeStamp='Mon Jul  8 20:15:03 2019'>
 <section name="__ROOT__" level="0" order="1" description="">
  <section name="software_version_and_target_device" level="1" order="1" description="">
   <keyValuePair key="beta" value="FALSE" description="" />
   <keyValuePair key="build_version" value="2552052" description="" />
-  <keyValuePair key="date_generated" value="Sun Jul  7 12:18:44 2019" description="" />
+  <keyValuePair key="date_generated" value="Mon Jul  8 20:15:01 2019" description="" />
   <keyValuePair key="os_platform" value="WIN64" description="" />
   <keyValuePair key="product_version" value="XSIM v2019.1 (64-bit)" description="" />
   <keyValuePair key="project_id" value="1cfebc8e33ea4175a0b6e88b50546bba" description="" />
-  <keyValuePair key="project_iteration" value="2" description="" />
+  <keyValuePair key="project_iteration" value="54" description="" />
   <keyValuePair key="random_id" value="74ef9a48-3be2-4da6-8c8d-462abc3a8a8f" description="" />
   <keyValuePair key="registration_id" value="74ef9a48-3be2-4da6-8c8d-462abc3a8a8f" description="" />
   <keyValuePair key="route_design" value="FALSE" description="" />
@@ -34,9 +34,9 @@
   </section>
   <section name="usage" level="2" order="2" description="">
    <keyValuePair key="iteration" value="0" description="" />
-   <keyValuePair key="runtime" value="420 ns" description="" />
-   <keyValuePair key="simulation_memory" value="6512_KB" description="" />
-   <keyValuePair key="simulation_time" value="0.11_sec" description="" />
+   <keyValuePair key="runtime" value="805 ns" description="" />
+   <keyValuePair key="simulation_memory" value="6020_KB" description="" />
+   <keyValuePair key="simulation_time" value="0.05_sec" description="" />
    <keyValuePair key="trace_waveform" value="true" description="" />
   </section>
  </section>
