@@ -28,7 +28,7 @@ module alucontrol(
     
     always @(*)
         case (aluop)
-            2'b00: alucont  <=  4'b0010;             // add for lw, sw
+            2'b00: alucont  <=  4'b0010;             // add for lw, sw, jal
             2'b01: alucont  <=  4'b0110;             // sub for beq
             2'b10:
                 case (funct)                        // RTYPE instructions

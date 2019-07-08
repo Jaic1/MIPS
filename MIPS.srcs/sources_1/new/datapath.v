@@ -24,8 +24,8 @@ module datapath #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     input                           clk, reset,
     input   [WIDTH-1 : 0]           memdata,
     input                           memtoreg, iord, pcen,
-    input                           regwrite, regdst,
-    input   [1:0]                   pcsource, alusrca,
+    input                           regwrite, 
+    input   [1:0]                   regdst, pcsource, alusrca,
     input   [2:0]                   alusrcb,
     input                           irwrite,
     input   [3:0]                   alucont,
@@ -36,8 +36,11 @@ module datapath #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     );
     
     // const parameter
-    localparam CONST_ZERO = 32'b000;
-    localparam CONST_FOUR = 32'b100;
+    localparam CONST_ZERO = 32'b0000;
+    localparam CONST_FOUR = 32'b0100;
+    localparam CONST_EIGH = 32'b1000;
+    localparam ADR_ZERO   = 5'b00000;   // address of register $zero
+    localparam ADR_RA     = 5'b11111;   // address of register $ra
     
     wire    [REGBITS-1 : 0]    ra1, ra2, wa;
     wire    [WIDTH-1   : 0]    md, rd1, rd2, wd, a, src1, src2, aluresult, aluout;
@@ -61,7 +64,10 @@ module datapath #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     // register file address fields
     assign ra1 = instr[REGBITS+20 : 21];    // register rs address
     assign ra2 = instr[REGBITS+15 : 16];    // register rt address
-    mux2    #(REGBITS)          regwritemux(ra2, instr[REGBITS+10 : 11], regdst, wa);   // choose write register address (rt or rd)
+    // choose write register address (rt, rd, or $ra)
+    mux4    #(REGBITS)          regwritemux(ra2, instr[REGBITS+10 : 11], ADR_RA, ADR_ZERO,
+                                            regdst,
+                                            wa);   
     
     // ir, load and store instructions
     flopen  #(WIDTH)            ir(clk, irwrite, memdata, instr);
@@ -74,17 +80,17 @@ module datapath #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     flop    #(WIDTH)            res(clk, aluresult, aluout);
     
     // split parameters into 3 lines: input, control, output
-    mux2    #(ADR_WIDTH)            adrmux(pc[ADR_WIDTH-1:0], aluout[ADR_WIDTH-1:0],
+    mux2    #(ADR_WIDTH)        adrmux(pc[ADR_WIDTH-1:0], aluout[ADR_WIDTH-1:0],
                                        iord, 
                                        adr);
     mux4    #(WIDTH)            src1mux(pc, a, shamt32, CONST_ZERO, 
                                         alusrca, 
                                         src1);
     mux8    #(WIDTH)            src2mux(writedata, CONST_FOUR, offset32x, offset32x2, 
-                                        offset32, CONST_ZERO, CONST_ZERO, CONST_ZERO,
+                                        offset32, CONST_EIGH, CONST_ZERO, CONST_ZERO,
                                         alusrcb, 
                                         src2);
-    mux4    #(WIDTH)            pcmux(aluresult, aluout, jpc, CONST_ZERO,
+    mux4    #(WIDTH)            pcmux(aluresult, aluout, jpc, a,
                                       pcsource,
                                       nextpc);
     mux2    #(WIDTH)            wdmux(aluout, md,

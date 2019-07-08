@@ -30,8 +30,8 @@ module mips #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     
     // data modified: irwrite
     wire irwrite;
-    wire zero, memtoreg, iord, pcen, regwrite, regdst;
-    wire [1:0] aluop, pcsource, alusrca;
+    wire zero, memtoreg, iord, pcen, regwrite;
+    wire [1:0] aluop, pcsource, alusrca, regdst;
     wire [2:0] alusrcb;
     wire [3:0] alucont;
     wire [WIDTH-1:0] instr;

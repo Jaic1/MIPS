@@ -26,38 +26,42 @@ module controller(
 	input                        zero,
 	output     reg               memread, memwrite, memtoreg, iord,
 	output                       pcen,
-	output     reg               regwrite, regdst,
-	output     reg  [1:0]        pcsource, aluop, alusrca,
+	output     reg               regwrite, 
+	output     reg  [1:0]        regdst, pcsource, aluop, alusrca,
 	output     reg  [2:0]        alusrcb,
 	output     reg               irwrite
     );
     
     // state
-    reg [3:0]   state, nextstate;
+    reg [4:0]   state, nextstate;
     reg         pcwrite, pcwritecond, pcwritecond_notzero;
-    parameter   FETCH    =   4'b0001;       // 1
-    parameter   DECODE   =   4'b0010;       // 2
-    parameter   MEMADR   =   4'b0011;       // 3
-    parameter   LWRD     =   4'b0100;       // 4
-    parameter   LWWR     =   4'b0101;       // 5
-    parameter   SWWR     =   4'b0110;       // 6
-    parameter   RTYPEEX  =   4'b0111;       // 7
-    parameter   RTYPEWR  =   4'b1000;       // 8
-    parameter   BEQEX    =   4'b1001;       // 9
-    parameter   JEX      =   4'b1010;       // 10
-    parameter   ANDIEX   =   4'b1011;       // 11
-    parameter   ANDIWR   =   4'b1100;       // 12
-    parameter   SHAMT    =   4'b1101;       // 13
-    parameter   BNEEX    =   4'b1110;       // 14
+    parameter   FETCH    =   5'b00001;       // 1
+    parameter   DECODE   =   5'b00010;       // 2
+    parameter   MEMADR   =   5'b00011;       // 3
+    parameter   LWRD     =   5'b00100;       // 4
+    parameter   LWWR     =   5'b00101;       // 5
+    parameter   SWWR     =   5'b00110;       // 6
+    parameter   RTYPEEX  =   5'b00111;       // 7
+    parameter   RTYPEWR  =   5'b01000;       // 8
+    parameter   BEQEX    =   5'b01001;       // 9
+    parameter   JEX      =   5'b01010;       // 10
+    parameter   ANDIEX   =   5'b01011;       // 11
+    parameter   ANDIWR   =   5'b01100;       // 12
+    parameter   SHAMT    =   5'b01101;       // 13
+    parameter   BNEEX    =   5'b01110;       // 14
+    parameter   JALCAL   =   5'b01111;       // 15
+    parameter   JALEX    =   5'b10000;       // 16
+    parameter   JR       =   5'b10001;       // 17
     
     // op
-    parameter   LW       =   6'b100011;
-    parameter   SW       =   6'b101011;
-    parameter   RTYPE    =   6'b000000;
+    parameter   LW       =   6'b100011;     // 0x23
+    parameter   SW       =   6'b101011;     // 0x2b
+    parameter   RTYPE    =   6'b000000;     // 0x00
     parameter   BEQ      =   6'b000100;     // 0x04
     parameter   BNE      =   6'b000101;     // 0x05
-    parameter   J        =   6'b000010;
-    parameter   ANDI     =   6'b001100;
+    parameter   J        =   6'b000010;     // 0x02
+    parameter   ANDI     =   6'b001100;     // 0x0c
+    parameter   JAL      =   6'b000011;     // 0x03
     
     // state register
     always @(posedge clk)
@@ -74,12 +78,14 @@ module controller(
                             RTYPE:      case (funct)
                                             6'b000000:  nextstate   <=  SHAMT;      // sll
                                             6'b000010:  nextstate   <=  SHAMT;      // srl
+                                            6'b001000:  nextstate   <=  JR;         // jr
                                             default:    nextstate   <=  RTYPEEX;
                                         endcase
                             BEQ:        nextstate   <=  BEQEX;
                             BNE:        nextstate   <=  BNEEX;
                             J:          nextstate   <=  JEX;
                             ANDI:       nextstate   <=  ANDIEX;
+                            JAL:        nextstate   <=  JALCAL;
                             default:    nextstate   <=  FETCH;  // control never reach here
                         endcase
             MEMADR:     case (op)
@@ -88,17 +94,11 @@ module controller(
                             default:    nextstate   <=  FETCH;  // control never reach here
                         endcase
             LWRD:       nextstate   <=  LWWR;
-            LWWR:       nextstate   <=  FETCH;
-            SWWR:       nextstate   <=  FETCH;
             RTYPEEX:    nextstate   <=  RTYPEWR;
-            RTYPEWR:    nextstate   <=  FETCH;
-            BEQEX:      nextstate   <=  FETCH;
-            BNEEX:      nextstate   <=  FETCH;
-            JEX:        nextstate   <=  FETCH;
             ANDIEX:     nextstate   <=  ANDIWR;
-            ANDIWR:     nextstate   <=  FETCH;
             SHAMT:      nextstate   <=  RTYPEWR;
-            default:    nextstate   <=  FETCH;  // control never reach here
+            JALCAL:     nextstate   <=  JALEX;
+            default:    nextstate   <=  FETCH;
         endcase
     end
     
@@ -107,7 +107,7 @@ module controller(
         // initial signal outputs
         irwrite     <=  0;          pcwritecond_notzero <= 0;
         pcwrite     <=  0;          pcwritecond     <=  0;
-        regwrite    <=  0;          regdst          <=  0;
+        regwrite    <=  0;          regdst          <=  2'b00;
         memread     <=  0;          memwrite        <=  0;
         alusrca     <=  2'b00;      alusrcb         <=  3'b000;
         aluop       <=  2'b00;      pcsource        <=  2'b00;
@@ -145,12 +145,12 @@ module controller(
             end
             
             RTYPEEX: begin
-               alusrca      <=  2'b01;  // choose register A and B(default)
-               aluop        <=  2'b10;  // RTYPE: utilize funct
+                alusrca      <=  2'b01;  // choose register A and B(default)
+                aluop        <=  2'b10;  // RTYPE: utilize funct
             end
             
             RTYPEWR: begin
-                regdst      <=  1;      // choose register rt
+                regdst      <=  2'b01;  // choose register rt
                 regwrite    <=  1;
             end
             
@@ -173,6 +173,17 @@ module controller(
                 pcsource    <=  2'b10;  // choose j target
             end
             
+            JALCAL: begin
+                alusrcb     <=  3'b001; // choose CONST_FOUR to add PC
+            end
+            
+            JALEX: begin
+                regdst      <=  2'b10;
+                regwrite    <=  1;
+                pcwrite     <=  1;
+                pcsource    <=  2'b10;  // choose j target
+            end
+            
             ANDIEX: begin
                 alusrca     <=  2'b01;
                 alusrcb     <=  3'b100;
@@ -186,6 +197,11 @@ module controller(
             SHAMT: begin
                 alusrca      <=  2'b10;  // choose shamt and register B(default)
                 aluop        <=  2'b10;  // RTYPE: utilize funct
+            end
+            
+            JR: begin
+                pcwrite      <=  1;
+                pcsource     <=  2'b11;  // choose output of register A
             end
         endcase
     end

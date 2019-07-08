@@ -1,8 +1,15 @@
-8c10001c    //      lw $s0, 0x1c($zero)
+8c10001c    //      lw $s0, 0x1c($zero)  (point to data1)
 32110001    //      andi $s1, $s0, 1   
 32120002    //      andi $s2, $s0, 2
 32130004    //      andi $s3, $s0, 4
 00129042    //      srl $s2, $s2, 1
 00139882    //      srl $s3, $s3, 2
-1640fff9    //      bne $s2, $zero, -7
-00000007    //      (data)
+16400001    //      bne $s2, $zero, 1
+00000007    //      (data1)
+0c00000d    //      jal  0x0d
+00000000    //      NOP
+08000000    //      j    0x00
+00000000    //
+ffffffff    //      (data2)
+8c080030    //      lw $t0, 0x30($zero)  (point to data2)
+03e00008    //      jr $ra
