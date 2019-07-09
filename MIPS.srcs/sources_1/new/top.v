@@ -21,36 +21,30 @@
 
 
 module top #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
-    
+    input              clk,
+    input     [15:0]   sw,
+    input              PS2Clk, PS2Data,
+    output    [15:0]   led
     );
-    reg clk;
-    reg reset;
+    wire     reset;
+    assign   reset = sw[15];
     
     wire memread, memwrite;
     wire [ADR_WIDTH-1 : 0] adr;
     wire [WIDTH-1 : 0] memdata, writedata;
+    wire               keyboard_valid;
+    reg  [7:0]         keyboard_data;
     
     // instantiate mips cpu core
     mips #(ADR_WIDTH, WIDTH, REGBITS) cpu(clk, reset, memdata,
-                                            memread, memwrite, adr, writedata);
+                                          memread, memwrite, adr, writedata);
     
     // external memory for code, data and IO devices
-    exmemory #(ADR_WIDTH, WIDTH) exmem(clk, memread, memwrite, adr, writedata,
-                                        memdata);
+    exmemory #(ADR_WIDTH, WIDTH) exmem(clk, sw, memread, memwrite, adr, writedata, keyboard_data,
+                                       keyboard_valid,
+                                       led, memdata);
     
-    // test bench
-    localparam PERIOD = 20;
-    
-    initial begin
-        clk = 1;
-        reset = 1;
-        #(5);
-        reset = 0;
-        #(PERIOD * 100) $stop;
-    end
-    
-    always begin
-        #(PERIOD / 2) clk = ~clk;
-    end
+    // I/O device interface
+    keyboard keyboard(clk, PS2Clk, PS2Data, keyboard_valid, keyboard_data);
     
 endmodule
