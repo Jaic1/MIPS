@@ -64,5 +64,6 @@ module bin2ascii (
             8'h3d: O <= 8'h37;      //  7
             8'h3e: O <= 8'h38;      //  8
             8'h46: O <= 8'h39;      //  9
+            default: O <= 8'h00;    // default
         endcase
 endmodule

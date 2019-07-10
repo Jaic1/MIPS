@@ -1,0 +1,5 @@
+8c100010    //      lw $s0, 0x10($zero)
+8e09000c    //      lw $t1, 0xc($s0)   
+ae090000    //      sw $t1, 0x0($s0)
+08000001    //      j 0x1
+0000fff0    //      (0xfff0 as address)

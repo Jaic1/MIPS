@@ -33,7 +33,7 @@ module top #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     wire [ADR_WIDTH-1 : 0] adr;
     wire [WIDTH-1 : 0] memdata, writedata;
     wire               keyboard_valid;
-    reg  [7:0]         keyboard_data;
+    wire  [7:0]        keyboard_data;
     
     // instantiate mips cpu core
     mips #(ADR_WIDTH, WIDTH, REGBITS) cpu(clk, reset, memdata,

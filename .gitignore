@@ -4,4 +4,6 @@
 *.str
 
 MIPS.cache/
+MIPS.hw/
+MIPS.runs/
 .Xil/
