@@ -44,8 +44,8 @@ module exmemory #(parameter ADR_WIDTH = 16, WIDTH = 32) (
     initial 
     begin
         $readmemh("memfile.dat", ROM);
-        IOW[0] <= 0;
-        IOW[1] <= 0;
+//        IOW[0] <= 0;
+//        IOW[1] <= 0;
     end
     
     // read or write bytes using big endian

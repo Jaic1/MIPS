@@ -52,6 +52,8 @@ module controller(
     parameter   JALCAL   =   5'b01111;       // 15
     parameter   JALEX    =   5'b10000;       // 16
     parameter   JR       =   5'b10001;       // 17
+    parameter   ADDIEX   =   5'b10010;       // 18
+    parameter   ADDIWR   =   5'b10011;       // 19
     
     // op
     parameter   LW       =   6'b100011;     // 0x23
@@ -60,8 +62,9 @@ module controller(
     parameter   BEQ      =   6'b000100;     // 0x04
     parameter   BNE      =   6'b000101;     // 0x05
     parameter   J        =   6'b000010;     // 0x02
-    parameter   ANDI     =   6'b001100;     // 0x0c
     parameter   JAL      =   6'b000011;     // 0x03
+    parameter   ANDI     =   6'b001100;     // 0x0c
+    parameter   ADDI     =   6'b001000;     // 0x08
     
     // state register
     always @(posedge clk)
@@ -84,8 +87,9 @@ module controller(
                             BEQ:        nextstate   <=  BEQEX;
                             BNE:        nextstate   <=  BNEEX;
                             J:          nextstate   <=  JEX;
-                            ANDI:       nextstate   <=  ANDIEX;
                             JAL:        nextstate   <=  JALCAL;
+                            ANDI:       nextstate   <=  ANDIEX;
+                            ADDI:       nextstate   <=  ADDIEX;
                             default:    nextstate   <=  FETCH;  // control never reach here
                         endcase
             MEMADR:     case (op)
@@ -98,6 +102,7 @@ module controller(
             ANDIEX:     nextstate   <=  ANDIWR;
             SHAMT:      nextstate   <=  RTYPEWR;
             JALCAL:     nextstate   <=  JALEX;
+            ADDIEX:     nextstate   <=  ADDIWR;
             default:    nextstate   <=  FETCH;
         endcase
     end
@@ -195,13 +200,23 @@ module controller(
             end
             
             SHAMT: begin
-                alusrca      <=  2'b10;  // choose shamt and register B(default)
-                aluop        <=  2'b10;  // RTYPE: utilize funct
+                alusrca     <=  2'b10;  // choose shamt and register B(default)
+                aluop       <=  2'b10;  // RTYPE: utilize funct
             end
             
             JR: begin
-                pcwrite      <=  1;
-                pcsource     <=  2'b11;  // choose output of register A
+                pcwrite     <=  1;
+                pcsource    <=  2'b11;  // choose output of register A
+            end
+            
+            ADDIEX: begin
+                alusrca     <=  2'b01;
+                alusrcb     <=  3'b010;
+                aluop       <=  2'b00;    
+            end
+            
+            ADDIWR: begin
+                regwrite    <=  1;
             end
         endcase
     end

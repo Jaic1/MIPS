@@ -1,21 +1,11 @@
-8c10004c    //      lw $s0, 0x4c($zero)   -- load IO address 0xfff0
-8c110050    //      lw $s1, 0x50($zero)   -- load bit 1 for cpuvalid
-ae000000    //      sw $zero, 0x0($s0)    -- init
-ae110000    //      sw $s1, 0x0($s0)      -- set cpuvalid = 1 to flush keyboardvalid
-ae000000    //      sw $zero, 0x0($s0)  - init cpuvalid = led = 0
-8e080004    //      lw $t0, 0x4($s0)    - wait for keyboardvalid = 1
-00084202    //      srl $t0, $t0, 0x8   -
-31080001    //      andi $t0, $t0, 0x1  -
-1100fffc    //      beq $t0, $zero, -4  -
-ae110000    //      sw $s1, 0x0($s0)      - set cpuvalid = 1 and led = 0
-8e08000c    //      lw $t0, 0xc($s0)      - load ckdata to $t0
-00084402    //      srl $t0, $t0, 0x10    -
-310800ff    //      andi $t0, $t0, 0xff   -
-01114025    //      or $t0, $t0, $s1      - concat 1(for cpuvalid) and ckdata
-ae080000    //      sw $t0, 0x0($s0)      - dispaly ckdata to led
-8e08000c    //      lw $t0, 0xc($s0)         - wait for sw[0] = 1 to continue
-31080001    //      andi $t0, $t0, 0x1       -
-1100fffd    //      beq $t0, $zero, -3       - jump to before
-08000004    //      j 0x4
-0000fff0    //      (0xfff0 as address)
-00010000    //      (data)
+8c100028    //      lw $s0, 0x28($zero)
+ae000000    //      sw $zero, 0x0($s0)
+8e0a000c    //      lw $t2, 0xc($s0)
+314a0001    //      andi $t2, $t2, 0x1
+1140fffd    //      beq $t2, $zero, -3
+20090001    //      addi $t1, $zero, 0x1
+21290002    //      addi $t1, $t1, 0x2
+ae090000    //      sw $t1, 0x0($s0)
+00000000    //      NOP
+08000008    //      j 0x8
+0000fff0    //      (address 0xfff0)
