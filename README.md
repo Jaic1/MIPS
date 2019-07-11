@@ -1,3 +1,3 @@
 # MIPS
 MIPS32 CPU  
-memfile.mem is in MIPS.sim/sim_1/behav/xsim
+memfile.dat is in MIPS.srcs\sources_1\new\
