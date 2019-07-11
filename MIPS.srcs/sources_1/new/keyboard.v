@@ -24,13 +24,10 @@ module keyboard(
     input              clk,
     input              PS2Clk,
     input              PS2Data,
-    inout              cpuvalid,
-    output reg  [7:0]  cpudata
+    input              cpuvalid,
+    output reg         keyboardvalid,
+    output reg  [7:0]  ckdata
     );
-    reg         cpuvalid_tri = 0;
-    assign      cpuvalid = cpuvalid_tri ? 1'b1 : 1'bz;
-    wire        valid;
-    assign      valid = cpuvalid;
     
     reg         CLK50MHZ = 0;
     reg         releasex = 0;
@@ -62,14 +59,12 @@ module keyboard(
         end
         
     always @(posedge clk)
-        begin
-        if (flag == 1'b1 && releasex == 1'b1 && valid == 1'b0)
+        if (flag == 1'b1 && releasex == 1'b1 && cpuvalid == 1'b0)
             begin
-                cpuvalid_tri   <=  1'b1;
-                cpudata        <=  asciicode;
+                keyboardvalid   <=  1'b1;
+                ckdata         <=  asciicode;
             end
-        else
-            cpuvalid_tri <= 1'b0;
-        end
+        else if (cpuvalid == 1'b1)
+            keyboardvalid  <=  1'b0;
         
 endmodule
