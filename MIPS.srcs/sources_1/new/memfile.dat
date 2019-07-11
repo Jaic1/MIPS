@@ -1,11 +1,36 @@
-8c100028    //      lw $s0, 0x28($zero)
-ae000000    //      sw $zero, 0x0($s0)
-8e0a000c    //      lw $t2, 0xc($s0)
-314a0001    //      andi $t2, $t2, 0x1
-1140fffd    //      beq $t2, $zero, -3
-20090001    //      addi $t1, $zero, 0x1
-21290002    //      addi $t1, $t1, 0x2
-ae090000    //      sw $t1, 0x0($s0)
-00000000    //      NOP
-08000008    //      j 0x8
-0000fff0    //      (address 0xfff0)
+20107ff8    //    addi $s0, $zero, 0x7ff8
+22107ff8    //    addi $s0, $s0, 0x7ff8      -- $s0 store IO address 0xfff0
+8e08000c    //    lw $t0, 0xc($s0)           -- main
+31090001    //    andi $t1, $t0, 0x1
+310a0002    //    andi $t2, $t0, 0x2
+310b0004    //    andi $t3, $t0, 0x4
+000a5042    //    srl $t2, $t2, 0x1
+000b5882    //    srl $t3, $t3, 0x2
+15200003    //    bne $t1, $zero, 0x3        -- branch to INPUT_PAT
+15400000    //    bne $t2, $zero, 0x0        -- branch to INPUT_SRC
+15600000    //    bne $t3, $zero, 0x0        -- branch to KMP
+08000002    //    j  0x2                     -- jump to main
+0c00000f    //    jal 15                     -- INPUT_PAT, jump to input_pat
+00000000    //    NOP
+08000002    //    j  0x2                     -- jump to main
+20180001    //    addi $t8, $zero, 0x1
+ae180004    //    sw $t8, 0x4($s0)         - set cpuvalid = 1
+20190001    //    addi $t9, $zero, 0x1
+ae000004    //    sw $zero, 0x4($s0)       - A : set cpuvalid = 0 first
+8e08000c    //    lw $t0, 0xc($s0)
+00084602    //    srl $t0, $t0, 0x18
+31080001    //    andi $t0, $t0, 0x1
+1100fffc    //    beq $t0, $zero, -4       - loop to wait keyboardvalid
+ae180004    //    sw $t8, 0x4($s0)         - set cpuvalid = 1
+8e08000c    //    lw $t0, 0xc($s0)
+00084402    //    srl $t0, $t0, 0x10
+310900ff    //    andi $t1, $t0, 0xff      - $t1 : fresh keyboard data
+ae090000    //    sw $t1, 0x0($s0)         - $t0 : display data to led
+af291000    //    sw $t1, 0x1000($t9)
+23390001    //    addi $t9, $t9, 0x1       - index++
+1520fff3    //    bne $t1, $zero, -13      --- branch to A
+ae000000    //    sw $zero, 0x0($s0)
+ae000004    //    sw $zero, 0x4($s0)
+2339fffe    //    addi $t9, $t9, -2
+ac191000    //    sw $t9, 0x1000($zero)
+03e00008    //    jr $ra

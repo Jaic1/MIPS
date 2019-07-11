@@ -35,8 +35,8 @@ module exmemory #(parameter ADR_WIDTH = 16, WIDTH = 32) (
     
     reg  [WIDTH-1 : 0]      ROM[1023:0];
     reg  [WIDTH-1 : 0]      RAM[1023:0];
-    reg  [WIDTH-1 : 0]      IOR[1:0];
-    reg  [WIDTH-1 : 0]      IOW[1:0];
+    reg  [WIDTH-1 : 0]      IOR;
+    reg  [WIDTH-1 : 0]      IOW[2:0];
     wire [ADR_WIDTH-1 : 0]  adrword;
     assign adrword = adr >> 2;
     
@@ -44,8 +44,6 @@ module exmemory #(parameter ADR_WIDTH = 16, WIDTH = 32) (
     initial 
     begin
         $readmemh("memfile.dat", ROM);
-//        IOW[0] <= 0;
-//        IOW[1] <= 0;
     end
     
     // read or write bytes using big endian
@@ -56,7 +54,9 @@ module exmemory #(parameter ADR_WIDTH = 16, WIDTH = 32) (
             else if (adrword >= 16380 && adrword < 16384)
                 case (adrword - 16380)
                     0: IOW[0] <= writedata;
-                    2: IOW[1] <= writedata;
+                    1: IOW[1] <= writedata;
+                    2: IOW[2] <= writedata;
+                    default: ;
                 endcase
                 
     always @(*)
@@ -64,27 +64,25 @@ module exmemory #(parameter ADR_WIDTH = 16, WIDTH = 32) (
         else if (adrword < 2048) memdata <= RAM[adrword-1024];
         else if (adrword >= 16380 && adrword < 16384)
             case (adrword - 16380)
-                0: memdata <= IOW[0];
-                1: memdata <= IOR[0];
-                2: memdata <= IOW[1];
-                3: memdata <= IOR[1];
+                3: memdata <= IOR;
+                default: ;
             endcase 
     
     // bind I/O ports
     // sw
-    always @(sw)
-        IOR[1][15:0] <= sw[15:0];         // 0xfffd, 0xfffc - sw[15:0]
+    always @(posedge clk)
+        IOR[15:0] <= sw[15:0];           // 0xfffd, 0xfffc - sw[15:0]
     
     // led
-    assign led[15:0] = IOW[0][15:0];      // 0xfff1, 0xfff0 - led[15:0]    
+    assign led[15:0] = IOW[0][15:0];     // 0xfff1, 0xfff0 - led[15:0]    
     
     // keyboard
-    assign cpuvalid = IOW[0][16];
+    assign cpuvalid = IOW[1][0];
 
     always @(keyboardvalid)
-        IOR[0][8] <= keyboardvalid;
+        IOR[24] <= keyboardvalid;
     
     always @(ckdata)
-        IOR[1][23:16] <= ckdata;
+        IOR[23:16] <= ckdata;
         
 endmodule

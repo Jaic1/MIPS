@@ -27,7 +27,7 @@ module top #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     output    [15:0]   led
     );
 //    // debug - slow down clk
-//    localparam CONST_50M = 50_000_000;
+//    localparam CONST_50M = 25_000_000;
 //    reg  [29:0] count = 0;
 //    reg  clk = 0;
 //    always @(posedge sysclk)
