@@ -1,0 +1,21 @@
+8c1a1000    //  lw $k0, 0x1000($zero)  }   - store pat len in $k0
+8c1b1800    //  lw $k1, 0x1800($zero)  }   - store src len in $k1
+20010000    //  addi $at, $zero, 0x0       - store result cnt in $at
+20090000    //  addi $t1, $zero, 0x0      }  - $t1 as src index
+113b000f    //  beq $t1, $k1, 0xf         }  - Loop1, branch to A
+20080000    //  addi $t0, $zero, 0x0   }  }  - $t0 as pat index
+111a0007    //  beq $t0, $k0, 0x7      }  }  - Loop2, branch to B
+01095020    //  add $t2, $t0, $t1      }  }
+115b0009    //  beq $t2, $k1, 0x9      }  }  - branch to C
+8d181004    //  lw $t8, 0x1004($t0)    }  }
+8d591804    //  lw $t9, 0x1804($t2)    }  }
+17190006    //  bne $t8, $t9, 0x6      }  }  - branch to C
+21080004    //  addi $t0, $t0, 0x4     }  }
+1000fff8    //  beq $zero, $zero, -8   }  }  - branch to Loop2
+00091082    //  srl $v0, $t1, 0x2         }  - B
+20420001    //  addi $v0, $v0, 0x1        }
+ac221f00    //  sw $v0, 0x1f00($at)       }
+20210004    //  addi $at, $at, 0x4        }
+21290004    //  addi $t1, $t1, 0x4        }  - C
+1000fff0    //  beq $zero, $zero, -16     }  - branch to Loop1
+ac201f00    //  sw $zero, 0x1f00($at)        - A

@@ -24,7 +24,9 @@ module top #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     input              clk,
     input     [15:0]   sw,
     input              PS2Clk, PS2Data,
-    output    [15:0]   led
+    output    [15:0]   led,
+    output    [7 :0]   seg,
+    output    [3 :0]   an
     );
 //    // debug - slow down clk
 //    localparam CONST_50M = 25_000_000;
@@ -56,7 +58,7 @@ module top #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     // external memory for code, data and IO devices
     exmemory #(ADR_WIDTH, WIDTH) exmem(clk, sw, memread, memwrite, adr, writedata, keyboardvalid,
                                        cpuvalid, ckdata,
-                                       led, memdata);
+                                       led, memdata, seg, an);
     
     // I/O device interface
     keyboard keyboard(clk, PS2Clk, PS2Data, cpuvalid, keyboardvalid, ckdata);

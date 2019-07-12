@@ -30,7 +30,9 @@ module exmemory #(parameter ADR_WIDTH = 16, WIDTH = 32) (
     output                        cpuvalid,
     input      [7           : 0]  ckdata,
     output     [15          : 0]  led,
-    output reg [WIDTH-1     : 0]  memdata
+    output reg [WIDTH-1     : 0]  memdata,
+    output     [7           : 0]  seg,
+    output     [3           : 0]  an
     );
     
     reg  [WIDTH-1 : 0]      ROM[1023:0];
@@ -84,5 +86,9 @@ module exmemory #(parameter ADR_WIDTH = 16, WIDTH = 32) (
     
     always @(ckdata)
         IOR[23:16] <= ckdata;
+        
+    // seg and an
+    assign seg[7:0] = IOW[2][7:0];
+    assign an[3:0]  = IOW[2][11:8];
         
 endmodule

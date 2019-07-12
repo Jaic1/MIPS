@@ -6,4 +6,5 @@
 MIPS.cache/
 MIPS.hw/
 MIPS.runs/
+MIPS.sim/
 .Xil/

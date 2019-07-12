@@ -49,6 +49,9 @@ module datapath #(parameter ADR_WIDTH = 16, WIDTH = 32, REGBITS = 5) (
     wire    [WIDTH-1   : 0]    shamt32;
     wire    [WIDTH-1   : 0]    pc, nextpc;
     
+//    // debug
+//    assign ledpc = pc[9:2];
+    
     // shamt
     assign shamt32    = {24'h000000, 3'b000, instr[10:6]};
     
