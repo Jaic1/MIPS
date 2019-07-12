@@ -4,7 +4,7 @@
 *.str
 
 MIPS.cache/
-MIPS.hw/
+MIPS.ip_user_files/
 MIPS.runs/
 MIPS.sim/
 .Xil/
